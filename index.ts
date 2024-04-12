@@ -10,6 +10,7 @@ puppeteer.use(StealthPlugin());
 const cookiesPath = './cookies.json';
 
 interface ElementData {
+    url: string;
     subscriberCount: string;
     videosCount: string;
     channelName: string;
@@ -69,7 +70,7 @@ const main = async () => {
                 await page.waitForSelector('#videos-count');
                 await page.waitForSelector('ytd-channel-name #text');
 
-                const elementData: ElementData = await page.evaluate(() => {
+                const elementData: ElementData = await page.evaluate((url) => {
                     const parseVideoCount = (countString: string) => {
                         return countString.trim();
                     };
@@ -85,8 +86,8 @@ const main = async () => {
 
                     const videosCount = parseVideoCount(videosCountText);
 
-                    return { subscriberCount, videosCount, channelName };
-                });
+                    return { url, subscriberCount, videosCount, channelName };
+                }, url);
 
                 scrapedData.push(elementData);
 
